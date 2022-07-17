@@ -87,10 +87,10 @@ namespace HomeWork7
         /// <param name="id">id удаляемого сотрудника</param>
         public void Del(int id)
         {
-            Worker[] NewWorkers = new Worker[workers.Length-1];
+            Worker[] NewWorkers = new Worker[workers.Length - 1];
             this.Load();
             //записываем новый массив с удаленным элементом
-            for(int i = 0; i < workers.Length; i++)
+            for (int i = 0; i < workers.Length; i++)
             {
                 if (id > i)
                 {
@@ -103,14 +103,109 @@ namespace HomeWork7
                     NewWorkers[i - 1] = workers[i];
                 }
             }
-            //перезаписываем файл 
+            this.Rewrite(NewWorkers);
+        }
+        /// <summary>
+        /// перезапись файла
+        /// </summary>
+        /// <param name="nworkers"></param>
+        public void Rewrite(Worker[] nworkers)
+        {  
             StreamWriter swNew = new StreamWriter("workers.txt", false);
-            for(int i= 0; i < NewWorkers.Length; i++)
+            for(int i= 0; i < nworkers.Length; i++)
             {
-                swNew.WriteLine(NewWorkers[i].PrintToFile());
+                swNew.WriteLine(nworkers[i].PrintToFile());
             }
             swNew.Close();
-            Array.Resize(ref workers, NewWorkers.Length);
+            Array.Resize(ref workers, nworkers.Length);
+        }
+        /// <summary>
+        /// редактирование сотрудника
+        /// </summary>
+        /// <param name="id"></param>
+        public void Red()
+        {
+            Worker[] NewWorkers = new Worker[workers.Length];
+            this.Load();
+            while (true)
+            {
+                try
+                {
+                    Console.WriteLine("введите id сотрудника которого хотите редактировать");
+                    int idred = Convert.ToInt32(Console.ReadLine());
+                    Console.WriteLine($"{workers[idred].Print()}\nвведите измененные данные");
+                    string[] w = Console.ReadLine().Split(' ');
+                    for (int i = 0; i < workers.Length; i++)
+                    {
+                        if (idred == i)
+                        {
+                            NewWorkers[i] = new Worker(workers[i].id, workers[i].DataInput, w[0], w[1], Convert.ToInt32(w[2]), Convert.ToDouble(w[3]), Convert.ToDateTime(w[4]), w[5]);
+                        }
+                        else NewWorkers[i] = workers[i];
+                    }
+                    this.Rewrite(NewWorkers);
+                    break;
+                }
+                catch
+                {
+                    Console.WriteLine("Допущена ошибка, повторите ввод снова");
+                    continue;
+                }
+            }
+        }
+        /// <summary>
+        /// вывод сотрудников в указанном диапозоне дат добавления
+        /// </summary>
+        /// <param name="range">диапозон дат</param>
+        public void range(string[] range)
+        {
+            DateTime[] r = new DateTime[2];
+            r[0] = Convert.ToDateTime(range[0]);
+            r[1] = Convert.ToDateTime(range[1]);
+            this.Load();
+            for(int i = 0; i < workers.Length; i++)
+            {
+                if (workers[i].DataInput >= r[0] & workers[i].DataInput <= r[1])
+                {
+                    Console.WriteLine(workers[i].Print());
+                }
+            }
+        }
+        /// <summary>
+        /// сортировка сотрудников по возрастанию и убыванию даты рождения
+        /// </summary>
+        /// <param name="flag">true-по возрастанию, false-по убыванию</param>
+        public void sort(bool flag)
+        {
+            this.Load();
+            Worker temp = new Worker();
+            for (int i = 0; i < workers.Length; i++)
+            {
+                for (int j = i + 1; j < workers.Length; j++)
+                {
+                    if (workers[i].DateOfBirth > workers[j].DateOfBirth)
+                    {
+                        temp = workers[i];
+                        workers[i] = workers[j];
+                        workers[j] = temp;
+                    }
+                }
+            }
+            if(flag)
+            {
+                for (int i = 0; i < workers.Length; i++)
+                {
+                    Console.WriteLine(workers[i].Print());
+                }
+            }
+            else
+            {
+                for (int i = workers.Length-1; i >= 0; i--)
+                {
+                    Console.WriteLine(workers[i].Print());
+                }
+            }
+            
         }
     }
 }

@@ -18,7 +18,7 @@ namespace HomeWork7
         /// <summary>
         /// время добавления записи
         /// </summary>
-        private DateTime DataInput;
+        public DateTime DataInput;
         /// <summary>
         /// Имя
         /// </summary>
@@ -38,7 +38,7 @@ namespace HomeWork7
         /// <summary>
         /// дата рождения
         /// </summary>
-        private DateTime DateOfBirth;
+        public DateTime DateOfBirth;
         /// <summary>
         /// место рождения
         /// </summary>
